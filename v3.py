@@ -1,9 +1,13 @@
-import serial
 import sqlite3
 import re
 
+LINUX_STATUS = False
+
+if LINUX_STATUS:
+    import serial
+
 # Crear o conectar a la base de datos
-db_connection = sqlite3.connect('/home/pi/Desktop/pruebas/datos_serial.db')
+db_connection = sqlite3.connect('/datos_serial.db')
 db_cursor = db_connection.cursor()
 
 # Agregar la columna 'fecha' a la tabla 'datos' si no existe
@@ -14,14 +18,16 @@ except sqlite3.OperationalError as e:
     pass
 
 # Configurar la comunicación serial
-puerto_serie = serial.Serial(
-    port='/dev/ttyUSB0',  # Reemplaza '/dev/ttyUSB0' con el nombre correcto del puerto USB
-    baudrate=9600,
-    bytesize=8,
-    parity='N',  # N = Ninguno, E = Par, O = Impar
-    stopbits=1,
-    timeout=1
-)
+
+if LINUX_STATUS:
+    puerto_serie = serial.Serial(
+        port='/dev/ttyUSB0',  # Reemplaza '/dev/ttyUSB0' con el nombre correcto del puerto USB
+        baudrate=9600,
+        bytesize=8,
+        parity='N',  # N = Ninguno, E = Par, O = Impar
+        stopbits=1,
+        timeout=1,
+    )
 
 def guardar_en_base_de_datos(linea, fecha):
     # Guardar la línea y fecha en la base de datos
@@ -31,7 +37,11 @@ def guardar_en_base_de_datos(linea, fecha):
 try:
     while True:
         # Leer la línea de datos desde el puerto serie
-        linea_datos = puerto_serie.readline().decode('utf-8')
+        if LINUX_STATUS:
+            linea_datos = puerto_serie.readline().decode('utf-8')
+        else:
+            linea_datos = "ID777\rTM16:18:35\rDT20 JUL 23\rSP1 Mineral\r" \
+                          "U1 Limpieza\rU3 V3\rAD4 2.32\rE\r"
 
         # Imprimir la línea de datos recibida
         print("Datos recibidos:", linea_datos)
@@ -52,7 +62,8 @@ except KeyboardInterrupt:
 
 finally:
     # Cerrar la conexión del puerto serie
-    puerto_serie.close()
+    if LINUX_STATUS:
+        puerto_serie.close()
 
     # Cerrar la conexión a la base de datos
     db_connection.close()
