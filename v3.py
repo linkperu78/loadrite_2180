@@ -2,7 +2,7 @@ import sql
 import re
 import time
 
-LINUX_STATUS = False
+LINUX_STATUS = True
 
 if LINUX_STATUS:
     import serial
@@ -17,7 +17,7 @@ if LINUX_STATUS:
         bytesize=8,
         parity='N',  # N = Ninguno, E = Par, O = Impar
         stopbits=1,
-        timeout=1,
+        timeout=3,
     )
 
 my_sql_db = sql.my_db_class(database_name)
@@ -27,16 +27,16 @@ my_sql_db.create_table_name()
 try:
     while True:
         # Leer la línea de datos desde el puerto serie
+        #linea_datos = ""
         if LINUX_STATUS:
-            linea_datos = puerto_serie.readline().decode('utf-8')
-        else:
-            linea_datos = "ID777\rTM16:18:35\rDT20 JUL 23\rSP1 Mineral\r" \
-                          "U1 Limpieza\rU2 Tajo1\U3 V3\rAD4 2.32\rE\r"
-        if not "U1" in linea_datos and not "U2" in linea_datos:
-            continue
+            linea_datos = puerto_serie.readline().decode()
+
+#        if not "U1" in linea_datos and not "U2" in linea_datos:
+#           continue
 
         # Imprimir la línea de datos recibida
-        print("Datos recibidos:", linea_datos)
+        parts = linea_datos.split("\r")
+        print(f"Datos recibidos =\n{parts}")
 
         # Buscar el patrón "TM" seguido de la fecha y hora correspondiente
         #patron = r'TM(\d{2}:\d{2}:\d{2})\rDT(\d{2} [A-Z]{3} \d{2})'
