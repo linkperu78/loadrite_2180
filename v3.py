@@ -23,9 +23,14 @@ if __name__ == "__main__":
             if not data:
                 time.sleep(0.1)
                 continue
+            #print()
+            #print("------------")
+            #print(data)
+            
             data = data.decode()
+            #print(data)
             mensaje = data.split("\r")
-            if len(mensaje) < 8:
+            if len(mensaje) < 9:
                 continue
 
             final_dictionary = {"test" : "delete"}
@@ -36,8 +41,11 @@ if __name__ == "__main__":
                         continue
                     new_value = msg.split(key)[1]
                     
-                    if(key == "ID"):
+                    if (key == "ID"):
                         new_value = int(new_value)
+
+                    if (key == "SP"):
+                        new_value=new_value.split(" ")[1]
 
                     if (key == "TM"):
                         pos_x = mensaje.index(msg)
@@ -45,11 +53,11 @@ if __name__ == "__main__":
                         date_ = time_.split("DT")[1]
                         new_value = date_ + " " + new_value
                     
-                    if key in list(secuecnia_header.keys()):
+                    if key in secuecnia_header.keys():
                         data_ = new_value.split(" ")
-                        secuencia_number = int(data_[0])
+                        sec_number = int(data_[0])
                         peso = float(data_[1])
-                        final_dictionary["Secuencia"] = secuencia_number
+                        final_dictionary["Secuencia"] = sec_number
                         final_dictionary["Peso"] = peso
                         new_value = secuecnia_header[key]
 

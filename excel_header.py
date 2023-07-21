@@ -20,14 +20,17 @@ sql_columns = {
 excel_dictionary = {
     "ID"    : "Cargadora",
     "TM"    : "Fecha",
-    "SP1 "   : "Producto",
-    "U1 "    : "Actividad",
-    "U2 "    : "Origen",
-    "U3 "    : "Camion",
-    "AD"    : "Funcion", 
+    "SP"    : "Producto",
+    "U1 "   : "Actividad",
+    "U2 "   : "Origen",
+    "U3 "   : "Camion",
+    "AD"    : "Funcion",
+    "SB"    : "Funcion",
+    "ST"    : "Funcion",
 }
 
 funcion_ = {
     "AD"    : "Agregar",
     "SB"    : "Sustraer",
+    "ST"    : "Vaciado total",
 }
