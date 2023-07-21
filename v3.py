@@ -1,64 +1,43 @@
 import sql
 import re
 import time
-
-LINUX_STATUS = True
-
-if LINUX_STATUS:
-    import serial
+import serial
 
 database_name = "datos_serial.db"
+_port='/dev/ttyUSB0'
+_baud_rate = 9600
+_timeout = 1
 
-# Configurar la comunicación serial
-if LINUX_STATUS:
-    puerto_serie = serial.Serial(
-        port='/dev/ttyUSB0',  # Reemplaza '/dev/ttyUSB0' con el nombre correcto del puerto USB
-        baudrate=9600,
-        bytesize=8,
-        parity='N',  # N = Ninguno, E = Par, O = Impar
-        stopbits=1,
-        timeout=3,
-    )
+if __name__ == "__main__":
+    my_sql_db = sql.my_db_class(database_name)
+    my_sql_db.set_tablename("datos")
+    my_sql_db.create_table_name()
 
-my_sql_db = sql.my_db_class(database_name)
-my_sql_db.set_tablename("datos")
-my_sql_db.create_table_name()
+    # Inicializar puerto COM
+    serial_port = serial.Serial(_port,_baud_rate, timeout = _timeout)
+    try:
+        while True:           
+            data = serial_port.readline()
+            if not data:
+                time.sleep(0.1)
+                continue
+            data = data.decode()
+            mensaje = data.split("\r")
+            print(mensaje)
 
-try:
-    while True:
-        # Leer la línea de datos desde el puerto serie
-        #linea_datos = ""
-        if LINUX_STATUS:
-            linea_datos = puerto_serie.readline().decode()
+    except Exception as e:
+        print(f"Error en main = {e}")
 
-#        if not "U1" in linea_datos and not "U2" in linea_datos:
-#           continue
+    except KeyboardInterrupt:
+        print("Lectura de datos seriales detenida.")
 
-        # Imprimir la línea de datos recibida
-        parts = linea_datos.split("\r")
-        print(f"Datos recibidos =\n{parts}")
+    finally:
+        serial_port.close()
+        # Cerrar la conexión a la base de datos
+        my_sql_db.close()
 
-        # Buscar el patrón "TM" seguido de la fecha y hora correspondiente
-        #patron = r'TM(\d{2}:\d{2}:\d{2})\rDT(\d{2} [A-Z]{3} \d{2})'
-        #coincidencias = re.findall(patron, linea_datos)
-        #print(f"Valor after re = {coincidencias}")
 
-        # Si se encontró una coincidencia, guardar la fecha en la base de datos
-        #if coincidencias:
-        #    fecha_tm, fecha_dt = coincidencias[0]
-        #    fecha_completa = fecha_dt + " " + fecha_tm
-            #my_sql_db.insert_data_in_table(linea_datos, fecha_completa)
-        
-        #time.sleep(2)
 
-except KeyboardInterrupt:
-    # Capturar la interrupción con Ctrl + C
-    print("Lectura de datos seriales detenida.")
 
-finally:
-    # Cerrar la conexión del puerto serie
-    if LINUX_STATUS:
-        puerto_serie.close()
-    # Cerrar la conexión a la base de datos
-    my_sql_db.close()
+
 
