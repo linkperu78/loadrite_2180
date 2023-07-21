@@ -53,12 +53,17 @@ class my_db_class():
         self.connection.commit()
 
 
-    def insert_data_in_table(self, array_new_values):
+    def insert_data_in_table(self, my_key_array, array_new_values):
         if  not isinstance(array_new_values, list):
             print(f"Error, input_variable is not an list array")
             return
-        
-        query = f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?)"
+        list_column = ",".join(my_key_array)
+        numbers_parameters = len(my_key_array)
+        incognitos_array = ["?"]*numbers_parameters
+        incog = ",".join(incognitos_array)
+        query = f"INSERT INTO {self.table_name} ({list_column}) VALUES ({incog})"
+        print(f"-- {my_key_array}")
+        print(f"-- {array_new_values}")
         try:
             self.cursor.execute(query, array_new_values)
             print(f" - Data agregada a la tabla {self.table_name} ")

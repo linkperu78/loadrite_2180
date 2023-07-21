@@ -8,6 +8,7 @@ sql_columns = {
     "Fecha"         : "VARCHAR(30)",
     "Producto"      : "VARCHAR(20)",
     "Actividad"     : "VARCHAR(10)",
+    "Origen"        : "VARCHAR(15)",
     "Camion"        : "VARCHAR(15)",
     "Funcion"       : "VARCHAR(30)",
     "Secuencia"     : "INTEGER",
@@ -19,11 +20,14 @@ sql_columns = {
 excel_dictionary = {
     "ID"    : "Cargadora",
     "TM"    : "Fecha",
-    "SP1"   : "Producto",
-    "U1"    : "Actividad",
-    "U2"    : "Origen",
-    "U3"    : "Volquete",
+    "SP1 "   : "Producto",
+    "U1 "    : "Actividad",
+    "U2 "    : "Origen",
+    "U3 "    : "Camion",
     "AD"    : "Funcion", 
 }
 
-
+funcion_ = {
+    "AD"    : "Agregar",
+    "SB"    : "Sustraer",
+}
